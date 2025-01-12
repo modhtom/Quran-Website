@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القرآن الكريم</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>القرآن الكريم</h1>
+            <p class="subtitle">استمع إلى تلاوات عطرة</p>
+        </div>
+
+        <div id="loading-notification" class="notification">
+            <div class="loading-spinner"></div>
+            جاري تحميل البيانات...
+        </div>
+
+        <div class="player-card">
+            <div class="selection-group">
+                <div class="select-wrapper">
+                    <label for="moshaf">الرواية</label>
+                    <select id="moshaf" class="custom-select">
+                        <option value="">-- اختر الرواية --</option>
+                    </select>
+                </div>
+
+                <div class="select-wrapper">
+                    <label for="reciter">القارئ</label>
+                    <select id="reciter" class="custom-select">
+                        <option value="">-- اختر القارئ --</option>
+                    </select>
+                </div>
+
+                <div class="select-wrapper">
+                    <label for="surah">السورة</label>
+                    <select id="surah" class="custom-select">
+                        <option value="">-- اختر السورة --</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="play-btn" class="play-button" disabled>
+                <span class="button-icon">▶</span>
+                <span class="button-text">تشغيل السورة</span>
+            </button>
+            </br>
+            <button id="download-btn" class="play-button" disabled>
+                <span class="button-icon">⬇</span>
+                <span class="button-text">تحميل السورة</span>
+            </button>
+            
+            <div class="audio-wrapper">
+                <audio id="audio-player" controls></audio>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/surahNames.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/player.js"></script>
+</body>
+</html>
