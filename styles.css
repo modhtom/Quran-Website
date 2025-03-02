@@ -158,3 +158,31 @@ audio {
         transform: rotate(360deg);
     }
 }
+
+a {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+}
+
+a:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+a:active {
+    transform: scale(0.98);
+}
+
+html[dir="rtl"] a {
+    left: auto;
+    right: 1rem;
+}
