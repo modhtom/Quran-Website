@@ -35,16 +35,29 @@ function populateMoshaf() {
 }
 
 function populateReciters() {
-    reciterSelect.innerHTML = '<option value="">-- اختر القارئ --</option>';
-    const selectedMoshaf = moshafSelect.value;
-    const filteredReciters = reciters.filter(reciter => 
-        reciter.moshaf.some(m => m.name === selectedMoshaf));
-    filteredReciters.forEach(reciter => {
-        const option = document.createElement('option');
-        option.value = reciter.id;
-        option.textContent = reciter.name;
-        reciterSelect.appendChild(option);
-    });
+    if (!window.isSecondAPI) {
+        reciterSelect.innerHTML = '<option value="">-- اختر القارئ --</option>';
+        const selectedMoshaf = moshafSelect.value;
+        const filteredReciters = reciters.filter(reciter => 
+            reciter.moshaf.some(m => m.name === selectedMoshaf));
+        filteredReciters.forEach(reciter => {
+            const option = document.createElement('option');
+            option.value = reciter.id;
+            option.textContent = reciter.name;
+            reciterSelect.appendChild(option);
+        });
+    }
+    else{
+        console.log("Loading editions....")
+        reciterSelect.innerHTML = '<option value="">-- اختر القارئ --</option>';
+        editions2.forEach(edition => {
+            const option = document.createElement('option');
+            option.value = edition.identifier;
+            option.textContent = edition.name.match(/\((.*?)\)/)?.[1] || edition.name; 
+            reciterSelect.appendChild(option);
+        });
+        console.log("DONE");
+    }
 }
 
 function populateSurahs() {
@@ -87,7 +100,7 @@ function playSurah() {
     }
     
     if (window.isSecondAPI) {
-        const apiUrl = `http://api.alquran.cloud/v1/surah/${surahNumber}/${reciterId}`;
+        const apiUrl = `https://api.alquran.cloud/v1/surah/${surahNumber}/${reciterId}`;
         console.log(apiUrl);
         fetch(apiUrl)
             .then(response => response.json())
