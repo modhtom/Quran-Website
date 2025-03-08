@@ -3,9 +3,11 @@ async function fetchReciters() {
     loadingNotification.style.display = 'flex';
     
     try {
-        const response = await fetch("https://www.mp3quran.net/api/v3/reciters?language=ar");
+        const response = await fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.mp3quran.net/api/v3/reciters?language=ar"));
+
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorText = await response.text();
+            throw new Error(`Network response was not ok: ${errorText}`);
         }
         const data = await response.json();
         window.isSecondAPI = false;

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const loadingNotification = document.getElementById("loading-notification");
     loadingNotification.style.display = "flex";
 
-    const excludedIds = [108, 109, 110, 113, 114, 116, 123];
+    const excludedIds =[108, 109, 110, 113, 114, 116, 123, 9,33,39,40,58,63,65,66,69,74,76,79,91,102,217,261,265];
     const excludedNamePrefixes = [
         "ترجمة معاني القرآن باللغة",
         "المختصر في تفسير القرآن الكريم",
