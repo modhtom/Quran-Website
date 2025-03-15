@@ -27,6 +27,10 @@ async function fetchRecitersSecondAPI() {
         loadingNotification.style.display = 'flex';
         document.getElementById('moshafPlace').style.display = 'none';
         window.isSecondAPI = true;
+        const existingSearchContainer = document.querySelector('.search-container');
+        if (existingSearchContainer) {
+            existingSearchContainer.remove();
+        }
         populateReciters()
     } catch (error) {
         console.error('Error fetching reciters:', error);

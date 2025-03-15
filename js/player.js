@@ -7,7 +7,110 @@ const surahSelect = document.getElementById('surah');
 const playButton = document.getElementById('play-btn');
 const audioPlayer = document.getElementById('audio-player');
 const downloadButton = document.getElementById('download-btn');
+const searchInput = document.createElement('input');
+searchInput.type = 'text';
+searchInput.id = 'reciter-search';
+searchInput.placeholder = 'ابحث عن القارئ...';
+searchInput.className = 'search-input';
+const searchResults = document.createElement('div');
+searchResults.id = 'search-results';
+searchResults.className = 'search-results';
+const searchContainer = document.createElement('div');
+searchContainer.className = 'search-container';
+searchContainer.appendChild(searchInput);
+searchContainer.appendChild(searchResults);
 
+function setupSearchFeature() {
+    if (!window.isSecondAPI) {
+        const playerCard = document.querySelector('.player-card');
+        const selectionGroup = document.querySelector('.selection-group');
+        playerCard.insertBefore(searchContainer, selectionGroup);
+        
+        searchInput.addEventListener('input', handleSearch);
+    } else {
+        const existingSearchContainer = document.querySelector('.search-container');
+        if (existingSearchContainer) {
+            existingSearchContainer.remove();
+        }
+    }
+}
+
+function handleSearch() {
+    const searchTerm = searchInput.value.trim().toLowerCase().replace(/[ا]/g, 'أ');;
+    searchResults.innerHTML = '';
+    
+    if (searchTerm.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+    }
+    
+    const matchedReciters = reciters.filter(reciter => 
+        reciter.name.toLowerCase().includes(searchTerm)
+    );
+    
+    if (matchedReciters.length === 0) {
+        searchResults.innerHTML = '<p class="no-results">لا توجد نتائج</p>';
+        searchResults.style.display = 'block';
+        return;
+    }
+    
+    matchedReciters.forEach(reciter => {
+        const resultItem = document.createElement('div');
+        resultItem.className = 'search-result-item';
+        
+        const reciterNameDiv = document.createElement('div');
+        reciterNameDiv.className = 'reciter-name';
+        reciterNameDiv.textContent = reciter.name;
+        resultItem.appendChild(reciterNameDiv);
+        
+        const moshafOptionsDiv = document.createElement('div');
+        moshafOptionsDiv.className = 'moshaf-options';
+        
+        reciter.moshaf.forEach(moshaf => {
+            const moshafOption = document.createElement('div');
+            moshafOption.className = 'moshaf-option';
+            moshafOption.textContent = moshaf.name;
+            moshafOption.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                selectReciterWithMoshaf(reciter, moshaf.name);
+            });
+            moshafOptionsDiv.appendChild(moshafOption);
+        });
+        
+        resultItem.appendChild(moshafOptionsDiv);
+        searchResults.appendChild(resultItem);
+    });
+    
+    searchResults.style.display = 'block';
+}
+
+function selectReciterWithMoshaf(reciter, moshafName) {
+    searchInput.value = '';
+    searchResults.style.display = 'none';
+    
+    for (let i = 0; i < moshafSelect.options.length; i++) {
+        if (moshafSelect.options[i].value === moshafName) {
+            moshafSelect.selectedIndex = i;
+            break;
+        }
+    }
+    
+    moshafSelect.dispatchEvent(new Event('change'));
+    
+    for (let i = 0; i < reciterSelect.options.length; i++) {
+        if (parseInt(reciterSelect.options[i].value) === reciter.id) {
+            reciterSelect.selectedIndex = i;
+            break;
+        }
+    }
+    reciterSelect.dispatchEvent(new Event('change'));
+    updateButtonStates();
+}
+document.addEventListener('click', (event) => {
+    if (!searchContainer.contains(event.target)) {
+        searchResults.style.display = 'none';
+    }
+});
 async function initializePlayer() {
     try {
         const data = await fetchReciters();
@@ -15,6 +118,7 @@ async function initializePlayer() {
         populateMoshaf();
         populateSurahs();
         populateReciters();
+        setupSearchFeature(); 
     } catch (error) {
         console.warn("First API failed, switching to second API");
         const data = await fetchRecitersSecondAPI();
@@ -101,7 +205,6 @@ function playSurah() {
     
     if (window.isSecondAPI) {
         const apiUrl = `https://api.alquran.cloud/v1/surah/${surahNumber}/${reciterId}`;
-        console.log(apiUrl);
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
