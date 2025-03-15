@@ -36,7 +36,7 @@ function setupSearchFeature() {
 }
 
 function handleSearch() {
-    const searchTerm = searchInput.value.trim().toLowerCase().replace(/(\b|^)ا/g, '$1أ');
+    const searchTerm = searchInput.value.trim().toLowerCase();
     searchResults.innerHTML = '';
     
     if (searchTerm.length < 2) {
